@@ -69,6 +69,9 @@ class CalculatorViewModel extends Notifier<CalculatorModel> {
       case AppConstants.keySin:
       case AppConstants.keyCos:
       case AppConstants.keyTan:
+      case 'asin':
+      case 'acos':
+      case 'atan':
       case AppConstants.keyLn:
       case AppConstants.keyLog:
       case AppConstants.keySqrt:

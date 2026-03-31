@@ -1,0 +1,50 @@
+appId: com.example.scientificCalculator
+---
+- launchApp
+
+# ==============================================================================
+# CASE 1: HEADER VERIFICATION
+# Verify the presence of the title and history button
+# ==============================================================================
+- assertVisible: {id: "title_scientific"}
+- assertVisible: "Scientific"
+- assertVisible: {id: "btn_history"}
+
+# ==============================================================================
+# CASE 2: DISPLAY VERIFICATION
+# Verify the input/output display layout and alignment
+# ==============================================================================
+- tapOn: {id: "btn_1"}
+- tapOn: {id: "btn_2"}
+- tapOn: {id: "btn_3"}
+- assertVisible: {id: "display_input", text: "123"}
+- assertVisible: {id: "display_result", text: "123"} # Current value also in result area
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 3: MODE TOGGLES
+# Verify the RAD/DEG chips toggle correctly
+# ==============================================================================
+- assertVisible: {id: "chip_deg"}
+- tapOn: {id: "chip_rad"}
+- assertVisible: {id: "chip_rad"}
+- tapOn: {id: "chip_deg"} # Return to default
+
+# ==============================================================================
+# CASE 4: SCIENTIFIC TOGGLE (2ND FUNCTION)
+# Verify that 'inv' shows/hides the 2nd function indicator
+# ==============================================================================
+- assertNotVisible: {id: "indicator_2nd"}
+- tapOn: {id: "btn_inv"}
+- assertVisible: {id: "indicator_2nd"}
+- tapOn: {id: "btn_inv"}
+- assertNotVisible: {id: "indicator_2nd"}
+
+# ==============================================================================
+# CASE 5: NEGATIVE TESTING (CLEANUP CHECK)
+# Verify that the menu icon and bottom nav are REMOVED permanently
+# ==============================================================================
+- assertNotVisible: {id: "menu_icon"}
+- assertNotVisible: "menu" # Checking for potential text backup
+- assertNotVisible: {id: "bottom_nav_bar"}
+- assertNotVisible: {id: "bottomNav"}

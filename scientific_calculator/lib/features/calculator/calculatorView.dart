@@ -33,7 +33,7 @@ class CalculatorView extends ConsumerWidget {
                 _buildModifiers(state, viewModel, colorScheme),
 
                 // Scientific Function Panel
-                _buildScientificPanel(viewModel, colorScheme),
+                _buildScientificPanel(viewModel, colorScheme, state),
                 
                 const SizedBox(height: 16),
                 
@@ -60,19 +60,27 @@ class CalculatorView extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Row(
           children: [
-            Text(
-              'Scientific',
-              style: GoogleFonts.manrope(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-                letterSpacing: -0.5,
+            Semantics(
+              identifier: 'title_scientific',
+              child: Text(
+                'Scientific',
+                style: GoogleFonts.manrope(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary,
+                  letterSpacing: -0.5,
+                ),
               ),
             ),
             const Spacer(),
-            IconButton(
-              icon: Icon(Icons.history, color: colorScheme.onSurfaceVariant),
-              onPressed: () => _showHistory(context, state, viewModel),
+            Semantics(
+              label: 'btn_history',
+              identifier: 'btn_history',
+              button: true,
+              child: IconButton(
+                icon: Icon(Icons.history, color: colorScheme.onSurfaceVariant),
+                onPressed: () => _showHistory(context, state, viewModel),
+              ),
             ),
           ],
         ),
@@ -143,11 +151,14 @@ class CalculatorView extends ConsumerWidget {
                                 }
                                 Navigator.pop(context);
                               },
-                              child: Text(
-                                item,
-                                style: GoogleFonts.inter(
-                                  fontSize: 18,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                              child: Semantics(
+                                identifier: 'history_item_$index',
+                                child: Text(
+                                  item,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 18,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
                                 ),
                               ),
                             ),
@@ -171,26 +182,32 @@ class CalculatorView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            state.currentInput,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-              fontWeight: FontWeight.w500,
+          Semantics(
+            identifier: 'display_input',
+            child: Text(
+              state.currentInput,
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 8),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(
-              state.resultValue.isEmpty ? state.currentInput : state.resultValue,
-              style: GoogleFonts.manrope(
-                fontSize: 64,
-                fontWeight: FontWeight.w800,
-                color: colorScheme.onSurface,
-                letterSpacing: -2.0,
+            child: Semantics(
+              identifier: 'display_result',
+              child: Text(
+                state.resultValue.isEmpty ? state.currentInput : state.resultValue,
+                style: GoogleFonts.manrope(
+                  fontSize: 64,
+                  fontWeight: FontWeight.w800,
+                  color: colorScheme.onSurface,
+                  letterSpacing: -2.0,
+                ),
               ),
             ),
           ),
@@ -205,6 +222,7 @@ class CalculatorView extends ConsumerWidget {
       child: Row(
         children: [
           _buildChip(
+            id: 'chip_rad',
             label: 'RAD',
             isActive: !state.isDegreeMode,
             onTap: () => viewModel.onButtonPressed(AppConstants.keyDegRad),
@@ -212,69 +230,85 @@ class CalculatorView extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           _buildChip(
+            id: 'chip_deg',
             label: 'DEG',
             isActive: state.isDegreeMode,
             onTap: () => viewModel.onButtonPressed(AppConstants.keyDegRad),
             colorScheme: colorScheme,
           ),
           const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: colorScheme.secondary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.settings_input_component, size: 14, color: colorScheme.secondary),
-                const SizedBox(width: 4),
-                Text(
-                  '2nd',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.secondary,
-                  ),
+          if (state.isInverse)
+            Semantics(
+              identifier: 'indicator_2nd',
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: colorScheme.secondary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ],
+                child: Row(
+                  children: [
+                    Icon(Icons.settings_input_component, size: 14, color: colorScheme.secondary),
+                    const SizedBox(width: 4),
+                    Text(
+                      '2nd',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );
   }
 
   Widget _buildChip({
+    required String id,
     required String label,
     required bool isActive,
     required VoidCallback onTap,
     required ColorScheme colorScheme,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isActive ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
-            letterSpacing: 1.0,
+    return Semantics(
+      identifier: id,
+      button: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          decoration: BoxDecoration(
+            color: isActive ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isActive ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+              letterSpacing: 1.0,
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildScientificPanel(CalculatorViewModel viewModel, ColorScheme colorScheme) {
+  Widget _buildScientificPanel(CalculatorViewModel viewModel, ColorScheme colorScheme, CalculatorModel state) {
     final buttons = [
-      ['sin', 'cos', 'tan', 'inv'],
+      ['(', ')', 'π', 'E'],
+      [
+        state.isInverse ? 'asin' : 'sin',
+        state.isInverse ? 'acos' : 'cos',
+        state.isInverse ? 'atan' : 'tan',
+        'inv'
+      ],
       ['ln', 'log', '√', 'xⁿ'],
     ];
 

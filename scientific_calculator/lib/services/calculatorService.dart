@@ -35,8 +35,9 @@ class CalculatorService {
         .replaceAll('×', '*')
         .replaceAll('÷', '/')
         .replaceAll('−', '-')
-        .replaceAll('π', 'pi')
-        .replaceAll('E', 'e'); // 'e' is used for the constant
+        .replaceAll('π', math.pi.toString())
+        .replaceAll('e', math.e.toString())
+        .replaceAll('E', math.e.toString()); // Both lowercase and uppercase E
 
     // math_expressions uses '^' for power, so 'x^y' should just be '^'
     // For sqrt, we replace `√` or `sqrt`
@@ -50,14 +51,22 @@ class CalculatorService {
     // Using regex to accurately capture percentage suffix.
     result = result.replaceAll(RegExp(r'%'), '/100');
 
-    // Handle Degree to Radian conversion for Trigonometric functions
-    // The user presses 'sin' producing 'sin('
+    // Handle Degree/Radian conversion for Trigonometric functions
     if (isDegreeMode) {
-      // (pi/180) = 0.017453292519943295
-      const deg2rad = '(pi/180)*';
-      result = result.replaceAll('sin(', 'sin($deg2rad');
-      result = result.replaceAll('cos(', 'cos($deg2rad');
-      result = result.replaceAll('tan(', 'tan($deg2rad');
+      // Inverse Trig: Convert Result (Rad -> Deg)
+      // For arcsin(x), the result is in Radians. We multiply by (180/pi) to get Degrees.
+      final rad2deg = '(${180 / math.pi})';
+      result = result.replaceAll('asin(', '$rad2deg*arcsin(');
+      result = result.replaceAll('acos(', '$rad2deg*arccos(');
+      result = result.replaceAll('atan(', '$rad2deg*arctan(');
+
+      // Normal Trig: Convert Input (Deg -> Rad)
+      // For sin(x), the input is in Degrees. We multiply by (pi/180) to get Radians.
+      // We use word boundaries (\b) to ensure 'sin(' doesn't match 'asin('
+      final deg2rad = '(${math.pi / 180})*';
+      result = result.replaceAll(RegExp(r'\bsin\('), 'sin($deg2rad');
+      result = result.replaceAll(RegExp(r'\bcos\('), 'cos($deg2rad');
+      result = result.replaceAll(RegExp(r'\btan\('), 'tan($deg2rad');
     }
 
     // Handle missing closing parentheses to allow evaluating 'sin(30' directly

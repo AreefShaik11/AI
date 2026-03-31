@@ -1,0 +1,62 @@
+appId: com.example.scientificCalculator
+---
+- launchApp
+
+# ==============================================================================
+# CASE 1: ADDITION
+# Verify that two numbers can be added together
+# ==============================================================================
+- tapOn: {id: "btn_7"}
+- tapOn: {id: "btn_add"}
+- tapOn: {id: "btn_8"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "15"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 2: SUBTRACTION
+# Verify that subtraction works correctly
+# ==============================================================================
+- tapOn: {id: "btn_5"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_subtract"}
+- tapOn: {id: "btn_2"}
+- tapOn: {id: "btn_5"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "25"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 3: MULTIPLICATION
+# Verify that two numbers can be multiplied (using '×' symbol)
+# ==============================================================================
+- tapOn: {id: "btn_6"}
+- tapOn: {id: "btn_multiply"}
+- tapOn: {id: "btn_7"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "42"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 4: DIVISION
+# Verify that division works correctly (using '÷' symbol)
+# ==============================================================================
+- tapOn: {id: "btn_1"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_divide"}
+- tapOn: {id: "btn_4"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "25"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 5: PERCENTAGE
+# Verify that the percentage operator works correctly
+# ==============================================================================
+- tapOn: {id: "btn_1"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_percent"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "0.1"} # 10% = 0.1
+- tapOn: {id: "btn_clear"}

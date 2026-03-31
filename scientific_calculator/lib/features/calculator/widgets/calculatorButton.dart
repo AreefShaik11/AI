@@ -9,6 +9,7 @@ class CalculatorButton extends StatelessWidget {
   final Color textColor;
   final double fontSize;
   final bool isBold;
+  final String? id; // Explicit ID for automation
 
   const CalculatorButton({
     Key? key,
@@ -18,14 +19,16 @@ class CalculatorButton extends StatelessWidget {
     required this.textColor,
     this.fontSize = 28,
     this.isBold = false,
+    this.id,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String semanticLabel = _getSemanticLabel(label is String ? label : 'icon');
+    // Priority: Explicit id -> Generated semantic label
+    String semanticLabel = id ?? _getSemanticLabel(label is String ? label : '_icon');
 
     return Semantics(
-      label: semanticLabel,
+      identifier: semanticLabel, // Provide the ID for Maestro
       button: true,
       child: Material(
         color: backgroundColor,
@@ -51,29 +54,59 @@ class CalculatorButton extends StatelessWidget {
   }
 
   String _getSemanticLabel(String buttonLabel) {
+    if (buttonLabel == '_icon') return 'btn_icon';
+    
     switch (buttonLabel) {
       case AppConstants.keyAdd:
-        return 'btnAdd';
+        return 'btn_add';
       case AppConstants.keySubtract:
-        return 'btnSubtract';
+        return 'btn_subtract';
       case AppConstants.keyMultiply:
-        return 'btnMultiply';
+        return 'btn_multiply';
       case AppConstants.keyDivide:
-        return 'btnDivide';
+        return 'btn_divide';
       case AppConstants.keySin:
-        return 'btnSin';
+        return 'btn_sin';
       case AppConstants.keyCos:
-        return 'btnCos';
+        return 'btn_cos';
       case AppConstants.keyTan:
-        return 'btnTan';
+        return 'btn_tan';
+      case 'asin':
+        return 'btn_asin';
+      case 'acos':
+        return 'btn_acos';
+      case 'atan':
+        return 'btn_atan';
       case AppConstants.keyEquals:
-        return 'btnEquals';
+        return 'btn_equals';
       case AppConstants.keyClear:
       case AppConstants.keyAllClear:
-        return 'btnClear';
+        return 'btn_clear';
+      case AppConstants.keyPercent:
+        return 'btn_percent';
+      case AppConstants.keyDot:
+        return 'btn_dot';
+      case '(':
+        return 'btn_left_paren';
+      case ')':
+        return 'btn_right_paren';
+      case '√':
+        return 'btn_sqrt';
+      case 'xⁿ':
+        return 'btn_pow_y';
+      case 'log':
+        return 'btn_log';
+      case 'ln':
+        return 'btn_ln';
+      case 'π':
+        return 'btn_pi';
+      case 'E':
+        return 'btn_e';
       default:
-        return 'btn$buttonLabel';
+        // For numbers and other simple labels
+        return 'btn_${buttonLabel.toLowerCase()}';
     }
   }
-}
 
+
+}

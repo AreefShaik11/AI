@@ -1,0 +1,86 @@
+appId: com.example.scientificCalculator
+---
+- launchApp
+
+# ==============================================================================
+# CASE 1: TRIGONOMETRY
+# Verify sin, cos, tan results in DEG mode
+# ==============================================================================
+- tapOn: {id: "btn_sin"}
+- tapOn: {id: "btn_3"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_right_paren"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "0.5"}
+- tapOn: {id: "btn_clear"}
+
+- tapOn: {id: "btn_cos"}
+- tapOn: {id: "btn_6"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_right_paren"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "0.5"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 2: CONSTANTS (Pi & Euler)
+# Verify that Pi and E can be used correctly (10-digit precision)
+# ==============================================================================
+- tapOn: {id: "btn_pi"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "3.141592654"}
+- tapOn: {id: "btn_clear"}
+
+- tapOn: {id: "btn_e"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "2.718281828"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 3: INVERSION
+# Verify that 'inv' switches functions to asin, acos, atan
+# ==============================================================================
+- tapOn: {id: "btn_inv"} # Toggle inverse mode
+- assertVisible: {id: "indicator_2nd"}
+- tapOn: {id: "btn_asin"} # Testing our dynamic button
+- tapOn: {id: "btn_1"}
+- tapOn: {id: "btn_right_paren"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "90"} # asin(1) = 90 deg
+- tapOn: {id: "btn_clear"}
+- tapOn: {id: "btn_inv"} # Toggle back to standard
+
+# ==============================================================================
+# CASE 4: LOGARITHMS & ROOTS
+# Verify log, ln and sqrt calculations
+# ==============================================================================
+- tapOn: {id: "btn_log"}
+- tapOn: {id: "btn_1"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_0"}
+- tapOn: {id: "btn_right_paren"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "2"}
+- tapOn: {id: "btn_clear"}
+
+- tapOn: {id: "btn_sqrt"}
+- tapOn: {id: "btn_2"}
+- tapOn: {id: "btn_5"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "5"}
+- tapOn: {id: "btn_clear"}
+
+# ==============================================================================
+# CASE 5: PARENTHESES
+# Verify order of operations with parentheses (Using '×' instead of '*')
+# ==============================================================================
+- tapOn: {id: "btn_2"}
+- tapOn: {id: "btn_multiply"}
+- tapOn: {id: "btn_left_paren"}
+- tapOn: {id: "btn_3"}
+- tapOn: {id: "btn_add"}
+- tapOn: {id: "btn_4"}
+- tapOn: {id: "btn_right_paren"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "14"} # 2 × (3 + 4) = 14
+- tapOn: {id: "btn_clear"}

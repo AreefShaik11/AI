@@ -1,0 +1,19 @@
+appId: com.example.scientificCalculator
+---
+- launchApp
+
+# ==============================================================================
+# CASE 1: HISTORY LOGGING
+# Perform a calculation and verify it is logged in history (Using '×')
+# ==============================================================================
+- tapOn: {id: "btn_5"}
+- tapOn: {id: "btn_multiply"}
+- tapOn: {id: "btn_5"}
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "25"}
+- tapOn: {id: "btn_history"}
+- assertVisible: "5×5 = 25" # Using × instead of *
+- tapOn: {id: "history_item_0"}
+- assertVisible: {id: "display_input", text: "5×5"} # Using × instead of *
+- tapOn: {id: "btn_equals"}
+- assertVisible: {id: "display_result", text: "25"}

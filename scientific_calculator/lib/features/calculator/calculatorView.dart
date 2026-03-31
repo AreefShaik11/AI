@@ -21,7 +21,7 @@ class CalculatorView extends ConsumerWidget {
       body: Column(
         children: [
           // Custom Header
-          _buildHeader(context, colorScheme),
+          _buildHeader(context, colorScheme, state, viewModel),
           
           Expanded(
             child: Column(
@@ -44,29 +44,22 @@ class CalculatorView extends ConsumerWidget {
                     child: _buildMainKeypad(viewModel, colorScheme),
                   ),
                 ),
+                SizedBox(height: 16 + MediaQuery.of(context).padding.bottom),
               ],
             ),
           ),
-          
-          // Bottom Navigation Bar
-          _buildBottomNav(context, colorScheme),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildHeader(BuildContext context, ColorScheme colorScheme, CalculatorModel state, CalculatorViewModel viewModel) {
     return SafeArea(
       bottom: false,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Row(
           children: [
-            IconButton(
-              icon: Icon(Icons.menu, color: colorScheme.onSurfaceVariant),
-              onPressed: () {},
-            ),
-            const SizedBox(width: 8),
             Text(
               'Scientific',
               style: GoogleFonts.manrope(
@@ -79,11 +72,93 @@ class CalculatorView extends ConsumerWidget {
             const Spacer(),
             IconButton(
               icon: Icon(Icons.history, color: colorScheme.onSurfaceVariant),
-              onPressed: () {},
+              onPressed: () => _showHistory(context, state, viewModel),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showHistory(BuildContext context, CalculatorModel state, CalculatorViewModel viewModel) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'History',
+                    style: GoogleFonts.manrope(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      viewModel.clearHistory();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Clear',
+                      style: TextStyle(color: AppColors.error),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: state.history.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No history yet',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: state.history.length,
+                        itemBuilder: (context, index) {
+                          final item = state.history[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: InkWell(
+                              onTap: () {
+                                // Load history item back into input
+                                final parts = item.split(' = ');
+                                viewModel.onButtonPressed(AppConstants.keyClear);
+                                for (var char in parts[0].characters) {
+                                  viewModel.onButtonPressed(char);
+                                }
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                item,
+                                style: GoogleFonts.inter(
+                                  fontSize: 18,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -282,51 +357,6 @@ class CalculatorView extends ConsumerWidget {
 
   bool _isPrimaryOperator(dynamic b) {
     return b == AppConstants.keyDivide || b == AppConstants.keyMultiply || b == AppConstants.keySubtract || b == AppConstants.keyAdd;
-  }
-
-  Widget _buildBottomNav(BuildContext context, ColorScheme colorScheme) {
-    return Container(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.brightness == Brightness.dark ? const Color(0xFF1A1A1C) : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.calculate, true, colorScheme),
-          _buildNavItem(Icons.functions, false, colorScheme),
-          _buildNavItem(Icons.history, false, colorScheme),
-          _buildNavItem(Icons.settings, false, colorScheme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, bool isActive, ColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: isActive ? BoxDecoration(
-        color: colorScheme.secondary.withOpacity(0.1),
-        shape: BoxShape.circle,
-      ) : null,
-      child: Icon(
-        icon,
-        color: isActive ? colorScheme.secondary : colorScheme.onSurfaceVariant.withOpacity(0.5),
-      ),
-    );
   }
 }
 

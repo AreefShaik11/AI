@@ -5,6 +5,7 @@ class CalculatorModel {
   final bool isInverse;
   final double memoryValue;
   final bool hasComputed; // True if '=' was just pressed
+  final List<String> history;
 
   const CalculatorModel({
     required this.currentInput,
@@ -13,6 +14,7 @@ class CalculatorModel {
     required this.isInverse,
     required this.memoryValue,
     required this.hasComputed,
+    this.history = const [],
   });
 
   factory CalculatorModel.initial() {
@@ -23,6 +25,7 @@ class CalculatorModel {
       isInverse: false,
       memoryValue: 0.0,
       hasComputed: false,
+      history: [],
     );
   }
 
@@ -33,6 +36,7 @@ class CalculatorModel {
     bool? isInverse,
     double? memoryValue,
     bool? hasComputed,
+    List<String>? history,
   }) {
     return CalculatorModel(
       currentInput: currentInput ?? this.currentInput,
@@ -41,7 +45,9 @@ class CalculatorModel {
       isInverse: isInverse ?? this.isInverse,
       memoryValue: memoryValue ?? this.memoryValue,
       hasComputed: hasComputed ?? this.hasComputed,
+      history: history ?? this.history,
     );
   }
 }
+
 

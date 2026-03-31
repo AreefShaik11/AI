@@ -106,10 +106,20 @@ class CalculatorViewModel extends Notifier<CalculatorModel> {
 
     final result = _service.evaluate(state.currentInput, isDegreeMode: state.isDegreeMode);
     
+    final newHistory = List<String>.from(state.history);
+    if (result != 'Error') {
+      newHistory.insert(0, '${state.currentInput} = $result');
+    }
+
     state = state.copyWith(
       resultValue: result,
       hasComputed: true,
+      history: newHistory,
     );
+  }
+
+  void clearHistory() {
+    state = state.copyWith(history: []);
   }
 
   void memoryAdd() {

@@ -1,0 +1,34 @@
+# 🚀 Golden Rules for Premium Flutter Development
+
+Follow these universal standards to build high-performance, visually stunning, and perfectly automated cross-platform applications.
+
+## 🎨 UI/UX Excellence
+- **Rich Aesthetics**: Avoid system defaults. Use curated HSL color palettes, gradients, and subtle shadows to create a premium feel.
+- **Dynamic Layouts**: 
+    - Always account for **Safe Areas** (notches, home indicators).
+    - Use responsive widgets (`FittedBox`, `Expanded`, `Flexible`) to ensure consistency across iOS, Android, and Web.
+- **Typography**: Leverage **Google Fonts** to establish a distinct brand identity.
+- **Motion**: Implement micro-animations (`hover` effects, `fade-ins`, `page-transitions`) to make the interface feel alive.
+
+## 🤖 Reliability & Automation First
+- **Explicit Semantics**: Every interactive element MUST have a unique `identifier` set via the `Semantics` widget.
+    - NEVER rely on fragile text-matching or positional selectors for automation.
+    - Convention: `btn_<purpose>`, `display_<purpose>`, `input_<purpose>`.
+- **Maestro Testing Standards**: 
+    - Use separate projects/repositories for automation suites to maintain a clean codebase.
+    - In YAML flows, always use the explicit `{id: "..."}` syntax for the highest reliability.
+    - Document every Maestro "Case" with clear titles and comments.
+
+## 🏗 Modular Architecture
+- **State Management**: Use robust, reactive solutions like **Riverpod** or **Bloc**.
+- **Directory Structure**: Organize by **Features**, not just by layer:
+    - `lib/core/` (Theme, Constants, Utils)
+    - `lib/features/<name>/` (UI, ViewModel, State)
+    - `lib/services/` (Data providers, API logic)
+    - `lib/widgets/` (Reusable UI components)
+- **Design Tokens**: Standardize colors, spacing, and text styles in a central `AppTheme` or `AppColors` file.
+
+## 📱 Cross-Platform Identity
+- **Unified App ID**: Maintain a consistent `applicationId` (Android) and `bundleIdentifier` (iOS) (e.g., `com.company.appCamelCase`).
+- **Native Sync**: Ensure `package` declarations in Kotlin/Swift files match the project's namespace precisely to prevent launch crashes.
+- **Asset Management**: Optimize images and use SVGs where possible for crisp rendering on high-DPI displays.

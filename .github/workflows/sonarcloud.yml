@@ -29,17 +29,6 @@ jobs:
         run: flutter test --coverage
         working-directory: scientific_calculator
 
-      # ✅ ADD THIS STEP HERE
-      - name: Fix coverage paths
-        run: |
-          sed -i 's|SF:scientific_calculator/|SF:|g' coverage/lcov.info
-        working-directory: scientific_calculator
-
-      # (Optional but VERY useful for debugging)
-      - name: Debug coverage file
-        run: head -20 coverage/lcov.info
-        working-directory: scientific_calculator
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:

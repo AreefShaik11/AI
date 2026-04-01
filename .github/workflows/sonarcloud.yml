@@ -30,7 +30,10 @@ jobs:
         working-directory: scientific_calculator
 
       - name: Fix coverage paths
-        run: sed -i 's|SF:lib/|SF:scientific_calculator/lib/|g' scientific_calculator/coverage/lcov.info
+        run: |
+          sed -i 's|SF:lib/|SF:scientific_calculator/lib/|g' scientific_calculator/coverage/lcov.info
+          sed -i "s|SF:$GITHUB_WORKSPACE/scientific_calculator/|SF:scientific_calculator/|g" scientific_calculator/coverage/lcov.info
+          head -n 20 scientific_calculator/coverage/lcov.info
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -39,5 +42,6 @@ jobs:
             -Dsonar.projectKey=AreefShaik-prasthana_AI
             -Dsonar.organization=areefshaik-prasthana
             -Dsonar.dart.lcov.reportPath=scientific_calculator/coverage/lcov.info
+            -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

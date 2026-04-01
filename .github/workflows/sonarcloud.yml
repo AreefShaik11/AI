@@ -36,7 +36,7 @@ jobs:
           args: >
             -Dsonar.projectKey=AreefShaik-prasthana_AI
             -Dsonar.organization=areefshaik-prasthana
-            -Dsonar.dart.lcov.reportPath=coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

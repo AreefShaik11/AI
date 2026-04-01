@@ -29,6 +29,12 @@ jobs:
         run: flutter test --coverage
         working-directory: scientific_calculator
 
+      - name: Fix coverage paths
+        run: |
+          sed -i 's|SF:.*lib/|SF:lib/|g' scientific_calculator/coverage/lcov.info
+          echo "Top 10 SF: lines in lcov.info:"
+          grep "SF:" scientific_calculator/coverage/lcov.info | head -n 10
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
@@ -36,7 +42,7 @@ jobs:
           args: >
             -Dsonar.projectKey=AreefShaik-prasthana_AI
             -Dsonar.organization=areefshaik-prasthana
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.dart.lcov.reportPath=coverage/lcov.info
             -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

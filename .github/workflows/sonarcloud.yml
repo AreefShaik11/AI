@@ -31,9 +31,8 @@ jobs:
 
       - name: Fix coverage paths
         run: |
-          sed -i 's|SF:lib/|SF:scientific_calculator/lib/|g' scientific_calculator/coverage/lcov.info
-          sed -i "s|SF:$GITHUB_WORKSPACE/scientific_calculator/|SF:scientific_calculator/|g" scientific_calculator/coverage/lcov.info
-          head -n 20 scientific_calculator/coverage/lcov.info
+          dart scientific_calculator/scripts/fix_coverage_paths.dart scientific_calculator/coverage/lcov.info scientific_calculator/
+          grep "SF:scientific_calculator/lib" scientific_calculator/coverage/lcov.info | head -n 5
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scientific_calculator/main.dart';
-import 'package:scientific_calculator/features/calculator/calculator_view.dart';
 import 'package:scientific_calculator/features/calculator/widgets/calculator_button.dart';
 
 void main() {

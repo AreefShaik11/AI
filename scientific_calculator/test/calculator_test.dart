@@ -174,12 +174,25 @@ void main() {
       viewModel.onButtonPressed('mr');
       expect(viewModel.state.currentInput, '10');
 
-      // Recall to existing input
-      viewModel.onButtonPressed('2'); // continues from 10? No, 'C' was before.
-      // Wait! After mr, hasComputed is NOT true.
-      // So '2' appends. 
-      // Input is '102'.
-      expect(viewModel.state.currentInput, '102');
+      // Recall to existing input (covers currentInput != '0' branch)
+      viewModel.onButtonPressed('C');
+      viewModel.onButtonPressed('5');
+      viewModel.onButtonPressed('mr');
+      expect(viewModel.state.currentInput, '510');
+    });
+
+    test('Function append with existing input', () {
+      viewModel.onButtonPressed('C');
+      viewModel.onButtonPressed('2');
+      viewModel.onButtonPressed('sin');
+      expect(viewModel.state.currentInput, '2sin(');
+    });
+
+    test('Special xⁿ key', () {
+      viewModel.onButtonPressed('C');
+      viewModel.onButtonPressed('5');
+      viewModel.onButtonPressed('xⁿ');
+      expect(viewModel.state.currentInput, '5^');
     });
 
     test('Calculate error state continue', () {

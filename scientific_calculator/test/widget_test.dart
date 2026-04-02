@@ -141,8 +141,12 @@ void main() {
     // In CalculatorModel.initial(), isDegreeMode = true.
     // So DEG is active.
     
-    // Tap RAD chip
+    // Tap RAD chip (RAD is initially NOT active, DEG is active)
     await tester.tap(find.text('RAD'));
+    await tester.pump();
+    
+    // Tap DEG chip (to cover the other branch and toggle back)
+    await tester.tap(find.text('DEG'));
     await tester.pump();
     
     // Tap INV button

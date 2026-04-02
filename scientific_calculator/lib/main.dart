@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/appTheme.dart';
-import 'core/appConstants.dart';
-import 'features/calculator/calculatorView.dart';
+import 'core/app_theme.dart';
+import 'core/app_constants.dart';
+import 'features/calculator/calculator_view.dart';
 
 void main() {
   runApp(
@@ -13,7 +13,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

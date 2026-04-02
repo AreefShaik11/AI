@@ -10,8 +10,8 @@ class CalculatorService {
     try {
       String evalExpression = _preprocessExpression(expression, isDegreeMode);
       
-      Parser p = Parser();
-      Expression exp = p.parse(evalExpression);
+      final p = GrammarParser();
+      final exp = p.parse(evalExpression);
       ContextModel cm = ContextModel();
 
       // Ensure 'pi' and 'e' are bound if math_expressions requires it, though it usually handles it.
@@ -19,7 +19,8 @@ class CalculatorService {
       cm.bindVariable(Variable('pi'), Number(math.pi));
       cm.bindVariable(Variable('e'), Number(math.e));
 
-      double evalResult = exp.evaluate(EvaluationType.REAL, cm);
+      // ignore: deprecated_member_use
+      final double evalResult = exp.evaluate(EvaluationType.REAL, cm);
       
       if (evalResult.isNaN) return 'Error';
       if (evalResult.isInfinite) return 'Error';
@@ -39,9 +40,13 @@ class CalculatorService {
         .replaceAll('e', math.e.toString())
         .replaceAll('E', math.e.toString()); // Both lowercase and uppercase E
 
-    // math_expressions uses '^' for power, so 'x^y' should just be '^'
-    // For sqrt, we replace `√` or `sqrt`
-    result = result.replaceAll('√', 'sqrt');
+    // For sqrt, we replace `√` with `sqrt(` and ensure it's closed later
+    result = result.replaceAll('√', 'sqrt(');
+
+    // Standardize inverse trig function names for math_expressions (asin -> arcsin etc.)
+    result = result.replaceAll('asin(', 'arcsin(');
+    result = result.replaceAll('acos(', 'arccos(');
+    result = result.replaceAll('atan(', 'arctan(');
 
     // Handle log base 10 (math_expressions expects 2 arguments for log(b, x))
     // We replace log( with (1/ln(10))*ln( 
@@ -55,14 +60,14 @@ class CalculatorService {
     if (isDegreeMode) {
       // Inverse Trig: Convert Result (Rad -> Deg)
       // For arcsin(x), the result is in Radians. We multiply by (180/pi) to get Degrees.
-      final rad2deg = '(${180 / math.pi})';
-      result = result.replaceAll('asin(', '$rad2deg*arcsin(');
-      result = result.replaceAll('acos(', '$rad2deg*arccos(');
-      result = result.replaceAll('atan(', '$rad2deg*arctan(');
+      final rad2deg = '(${180 / math.pi})*';
+      result = result.replaceAll('arcsin(', '${rad2deg}arcsin(');
+      result = result.replaceAll('arccos(', '${rad2deg}arccos(');
+      result = result.replaceAll('arctan(', '${rad2deg}arctan(');
 
       // Normal Trig: Convert Input (Deg -> Rad)
       // For sin(x), the input is in Degrees. We multiply by (pi/180) to get Radians.
-      // We use word boundaries (\b) to ensure 'sin(' doesn't match 'asin('
+      // We use word boundaries (\b) to ensure 'sin(' doesn't match 'arcsin('
       final deg2rad = '(${math.pi / 180})*';
       result = result.replaceAll(RegExp(r'\bsin\('), 'sin($deg2rad');
       result = result.replaceAll(RegExp(r'\bcos\('), 'cos($deg2rad');
@@ -70,7 +75,6 @@ class CalculatorService {
     }
 
     // Handle missing closing parentheses to allow evaluating 'sin(30' directly
-    int openP = '^'.allMatches(result).length; // Just a placeholder, actually we need to count manually
     int openCount = 0;
     int closeCount = 0;
     for (int i = 0; i < result.length; i++) {

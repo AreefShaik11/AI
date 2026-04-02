@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/appConstants.dart';
+import '../../../core/app_constants.dart';
 
 class CalculatorButton extends StatelessWidget {
   final dynamic label;
@@ -12,7 +12,7 @@ class CalculatorButton extends StatelessWidget {
   final String? id; // Explicit ID for automation
 
   const CalculatorButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     required this.backgroundColor,
@@ -20,7 +20,7 @@ class CalculatorButton extends StatelessWidget {
     this.fontSize = 28,
     this.isBold = false,
     this.id,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

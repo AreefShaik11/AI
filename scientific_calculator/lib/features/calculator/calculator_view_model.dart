@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../services/calculatorService.dart';
-import '../../core/appConstants.dart';
-import 'calculatorModel.dart';
+import '../../services/calculator_service.dart';
+import '../../core/app_constants.dart';
+import 'calculator_model.dart';
 
 final calculatorServiceProvider = Provider((ref) => CalculatorService());
 
@@ -202,6 +202,6 @@ class CalculatorViewModel extends Notifier<CalculatorModel> {
       AppConstants.keyPercent,
       '^',
     ];
-    return operators.contains(val);
+    return operators.contains(val) || val.startsWith('^');
   }
 }

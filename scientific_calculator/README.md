@@ -78,6 +78,21 @@ flutter run -d ios
 flutter run -d android
 ```
 
+## 🚀 Continuous Integration (SonarCloud)
+
+We use **GitHub Actions** and **SonarCloud** to ensure high code quality and test coverage.
+
+- **Workflow**: Automated analysis runs on every `push` to `main` and all `pull requests`.
+- **Quality Gate**: The analysis checks for code smells, bugs, and security vulnerabilities.
+- **Coverage**: Tests are automatically run with `--coverage` to generate LCOV reports for SonarCloud.
+
+### Running Analysis Locally
+To see the same data SonarCloud sees, you can run the tests locally with coverage:
+```bash
+flutter test --coverage
+# The report is generated at coverage/lcov.info
+```
+
 ---
 
 ## 📁 Key Folders

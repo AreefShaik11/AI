@@ -1,0 +1,42 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: scientific_calculator
+
+      - name: Run tests
+        run: flutter test --coverage
+        working-directory: scientific_calculator
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: scientific_calculator
+          args: >
+            -Dsonar.projectKey=AreefShaik-prasthana_AI
+            -Dsonar.organization=areefshaik-prasthana
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.verbose=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

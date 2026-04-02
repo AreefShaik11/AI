@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/appColors.dart';
-import '../../core/appConstants.dart';
-import 'calculatorViewModel.dart';
-import 'calculatorModel.dart';
-import 'widgets/calculatorButton.dart';
+import '../../core/app_colors.dart';
+import '../../core/app_constants.dart';
+import 'calculator_view_model.dart';
+import 'calculator_model.dart';
+import 'widgets/calculator_button.dart';
 
 class CalculatorView extends ConsumerWidget {
-  const CalculatorView({Key? key}) : super(key: key);
+  const CalculatorView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -188,7 +188,7 @@ class CalculatorView extends ConsumerWidget {
               state.currentInput,
               style: GoogleFonts.inter(
                 fontSize: 18,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 1,
@@ -243,7 +243,7 @@ class CalculatorView extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: colorScheme.secondary.withOpacity(0.1),
+                  color: colorScheme.secondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
@@ -284,7 +284,7 @@ class CalculatorView extends ConsumerWidget {
           decoration: BoxDecoration(
             color: isActive ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Text(
             label,
@@ -309,7 +309,7 @@ class CalculatorView extends ConsumerWidget {
         state.isInverse ? 'atan' : 'tan',
         'inv'
       ],
-      ['ln', 'log', '√', 'xⁿ'],
+      ['ln', 'log', '√', 'xʸ'],
     ];
 
     return Padding(
@@ -347,46 +347,48 @@ class CalculatorView extends ConsumerWidget {
     ];
 
     return Column(
-      children: buttons.map((row) {
-        return Expanded(
-          child: Row(
-            children: row.map((b) {
-              final isZero = b == '0';
-              final isEquals = b == AppConstants.keyEquals;
-              final isOperator = _isPrimaryOperator(b);
-              final isSpecial = b == AppConstants.keyClear || b is IconData || b == '%';
-
-              return Expanded(
-                flex: isZero ? 2 : 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: CalculatorButton(
-                    label: b is IconData ? Icon(b, color: colorScheme.onSurface, size: 24) : b,
-                    onTap: () => viewModel.onButtonPressed(b is IconData ? AppConstants.keyBackspace : b as String),
-                    backgroundColor: isEquals 
-                        ? AppColors.primary 
-                        : isOperator 
-                            ? AppColors.secondary 
-                            : isSpecial 
-                                ? colorScheme.surfaceContainerHigh 
-                                : colorScheme.surfaceContainerHighest,
-                    textColor: isEquals 
-                        ? AppColors.onPrimary 
-                        : isOperator 
-                            ? AppColors.onSecondary 
-                            : b == AppConstants.keyClear 
-                                ? AppColors.error 
-                                : colorScheme.onSurface,
-                    isBold: true,
-                    fontSize: isEquals ? 32 : 24,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        );
-      }).toList(),
+      children: buttons.map((row) => Expanded(
+        child: Row(
+          children: row.map((b) => _buildKeypadButton(b, viewModel, colorScheme)).toList(),
+        ),
+      )).toList(),
     );
+  }
+
+  Widget _buildKeypadButton(dynamic b, CalculatorViewModel viewModel, ColorScheme colorScheme) {
+    final isZero = b == '0';
+    final isEquals = b == AppConstants.keyEquals;
+
+    return Expanded(
+      flex: isZero ? 2 : 1,
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: CalculatorButton(
+          label: b is IconData ? Icon(b, color: colorScheme.onSurface, size: 24) : b,
+          onTap: () => viewModel.onButtonPressed(b is IconData ? AppConstants.keyBackspace : b as String),
+          backgroundColor: _getButtonBackgroundColor(b, colorScheme),
+          textColor: _getButtonTextColor(b, colorScheme),
+          isBold: true,
+          fontSize: isEquals ? 32 : 24,
+        ),
+      ),
+    );
+  }
+
+  Color _getButtonBackgroundColor(dynamic b, ColorScheme colorScheme) {
+    if (b == AppConstants.keyEquals) return AppColors.primary;
+    if (_isPrimaryOperator(b)) return AppColors.secondary;
+    if (b == AppConstants.keyClear || b is IconData || b == '%') {
+      return colorScheme.surfaceContainerHigh;
+    }
+    return colorScheme.surfaceContainerHighest;
+  }
+
+  Color _getButtonTextColor(dynamic b, ColorScheme colorScheme) {
+    if (b == AppConstants.keyEquals) return AppColors.onPrimary;
+    if (_isPrimaryOperator(b)) return AppColors.onSecondary;
+    if (b == AppConstants.keyClear) return AppColors.error;
+    return colorScheme.onSurface;
   }
 
   bool _isPrimaryOperator(dynamic b) {

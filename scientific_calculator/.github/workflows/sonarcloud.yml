@@ -5,32 +5,40 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 'stable'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.projectKey=AreefShaik-prasthana_AI
-            -Dsonar.organization=areefshaik-prasthana
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+        
+    - name: Install LCOV tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lcov
+        
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Run tests with coverage
+      run: flutter test --coverage
+      
+    - name: Generate coverage report
+      run: genhtml coverage/lcov.info -o coverage/html
+      
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

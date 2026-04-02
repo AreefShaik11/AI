@@ -30,7 +30,7 @@ jobs:
         working-directory: scientific_calculator
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@a59600a94b5952c286950302b13919e34e7f369f # v5.0.0
+        uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.1
         with:
           projectBaseDir: scientific_calculator
           args: >

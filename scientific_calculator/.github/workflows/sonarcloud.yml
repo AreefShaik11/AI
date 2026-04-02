@@ -38,6 +38,11 @@ jobs:
     - name: Run tests with coverage
       run: flutter test --coverage
       
+    - name: Upload coverage to Qlty
+      uses: qltysh/qlty-action/coverage@main
+      with:
+        coverage-path: scientific_calculator/coverage/lcov.info
+      
     - name: Generate coverage report
       run: genhtml coverage/lcov.info -o coverage/html
       
